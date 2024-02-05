@@ -1,4 +1,11 @@
 \documentclass[italian,bachelor]{unibg}
+\usepackage{placeins}
+\usepackage{float}
+\usepackage{graphicx}
+\renewcommand\topfraction{.9}
+\renewcommand\textfraction{0.35}
+\renewcommand\floatpagefraction{0.8}
+
 
 \title{Analisi di vulnerabilità in $\\$ ambito web tramite $\\$ l'utilizzo di tecniche di $\\$ fuzzing}
 \advisor{Chiar.mo Prof.~Stefano $\\$Paraboschi}
@@ -17,7 +24,7 @@
 \emptypage
 
 \begin{abstract}
-In un periodo storico in cui le nostre vite sono sempre più interconnesse ed il mondo tecnologico è in continua evoluzione, la sicurezza informatica è diventata una priorità critica. Ogni giorno le informazioni ed i dati che scambiamo continuamente attraversano l'intera rete globale e, spesso, possono cadere nelle mani della persona sbagliata. Per questo al giorno d'oggi tutelarsi anche in ambito informatico è molto importante. La Sicurezza Informatica, Computer Security in lingua inglese, costituisce il settore dell'informatica dedicato all'analisi delle vulnerabilità, alla valutazione del rischio, alla gestione delle minacce e, di conseguenza, alla salvaguardia degli utenti individuali. Questo campo impiega una combinazione di mezzi, tecnologie e procedure finalizzati a garantire la protezione dei sistemi informatici preservandone l'integrità. 
+In un periodo storico in cui le nostre vite sono sempre più interconnesse ed il mondo tecnologico è in continua evoluzione, la sicurezza informatica è diventata una priorità critica. Ogni giorno le informazioni ed i dati che scambiamo continuamente attraversano l'intera rete globale e, spesso, possono cadere nelle mani della persona sbagliata. Un utilizzo improprio di un dispositivo oppure la mancanza di attenzione durante la navigazione web senza affidarsi a precisi sistemi di sicurezza dei dati può portare alla consegna dei prorpi dati sensibili nelle mani di malintenzionati. Per questo al giorno d'oggi è molto importante tutelarsi anche in ambito informatico. $\\$ $\\$ La Sicurezza Informatica costituisce il settore dell'informatica che si occuopa dell'analisi delle vulnerabilità, della valutazione del rischio, della gestione delle minacce e, di conseguenza, della salvaguardia degli utenti individuali. Questo campo impiega una combinazione di mezzi, tecnologie e procedure finalizzati a garantire la protezione dei sistemi informatici preservandone l'integrità. Tramite l'analisi di vulnerabilità è possibile massimizzare la sicurezza di un sistema e minimizzarne le possibili falle. $\\$ $\\$ Fuzzing è una tecnica utilizzata nel campo della sicurezza informatica per identificare vulnerabilità o difetti in una tecnologia ed è implementata ad esempio in ambito software, reti e protocolli, applicazioni web ed applicazioni mobile. Lo scopo di questa tesi è analizzare il funzionamento di diverse tecnologie di fuzzing in ambito web tramite l'utilizzo di TLS-Attacker, tlsfuzzer e Scapy. Lo studio di queste tre tecnologie è stato eseguito mediante il test di differenti server di prova con determinati certificati di sicurezza TLS. Il codice dei vari tools è open source ed è disponibile su Github. E' stato anche utilizzato il tool Wireshark per poter monitorare in chiaro l'effettivo scambio di pacchetti tra client e server in particolare durante il fuzzing con Scapy. I vari capitoli sono suddivisi nei tre fuzzer studiati. Il primo esplica TLS-Fuzzer e la sua capacità di testare handshake di tipo TLS. In questo capitolo viene dapprima trattato anche TLS, protocollo fondamentale per la sicurezza delle connessioni client-server e sul quale si basano i test effettuati con TLS-Fuzzer. Il secondo esplica tlsfuzzer, tool per effettuare fuzzing vero e proprio semrpe verso server TLS. Il terzo esplica Scapy, terzo tool che permette il test tramite fuzzing grazie alla creazione di pacchetti di rete personalizzati.
 \end{abstract}
 
 \emptypage
@@ -29,7 +36,7 @@ In un periodo storico in cui le nostre vite sono sempre più interconnesse ed il
 
 \input{chapters/chap01.tex}
 \input{chapters/chap02.tex}
-
+\input{chapters/chap03.tex}
 \nocite{*}
 \printbibliography[heading=bibintoc]
 
