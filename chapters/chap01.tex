@@ -162,11 +162,44 @@ $\\$
 \end{figure}
 \FloatBarrier
 \section{Fuzzing con TLS-Attacker}
-TLS-Attacker è stato utilizzato anche per svolgere vero e proprio fuzzing, nello specifico per testare il \textbf{buffer overflow}. In sostanza, si verifica \textbf{buffer overfow} quando si forniscono a un programma troppi dati. I dati in eccesso danneggiano lo spazio vicino in memoria e possono alterare altri dati. Di conseguenza, il programma potrebbe segnalare un errore o comportarsi diversamente. Tre distinte fasi costituiscono il fuzzing con TLS-Attacker per identificare vulnerabilità di \textbf{buffer overfow}: $\\$
+TLS-Attacker è stato utilizzato anche per svolgere vero e proprio fuzzing. Un esempio è il testing del \textbf{buffer overflow}. In sostanza, si verifica \textbf{buffer overfow} quando si forniscono a un programma troppi dati. I dati in eccesso danneggiano lo spazio vicino in memoria e possono alterare altri dati. Di conseguenza, il programma potrebbe segnalare un errore o comportarsi diversamente. Tre distinte fasi costituiscono il fuzzing con TLS-Attacker per identificare vulnerabilità di questo tipo: $\\$
  - \textbf{Fase 1: Ricerca di variabili rilevanti} $\\$
 Il flusso del protocollo TLS e i suoi messaggi contengono un'enorme quantità di variabili: lunghezza del messaggio, chiavi o certificati. Solo con alcune di queste variabili è possibile fare fuzzing. Per esempio alcune variabili non vengono validate dal protocollo oppure contengono valori casuali che non influenazano il comportamento del protocollo. Per tanto, esse vengono scartate per non essere utilizzate nella fase successiva.  $\\$
 - \textbf{Fase 2: Fuzzing con le variabili selezionate} $\\$
 Ora continuiamo quindi con le variabili scelte in precedenza. Durante questa fase sono stati eseguiti diversi test modificando casualmente delle variabili in flussi di protocollo corretti e valutando il comportamento del server. $\\$
 - \textbf{Fase 3: Fuzzing con flussi di protocollo casuali} $\\$
 Durante questa ultima fase vengono inviate nuovamente altre richieste al server di test utilizzando flussi di protocollo differenti. Quindi, se nella fase precedente si utilizzava un solo flusso di proocollo corretto modificandone le variabili di interesse, ora la sicurezza del server viene testata utilizzando flussi di protocollo diversi fra loro. 
+$\\$ $\\$
+Per esempio, proviamo a modificare il parametro, quindi una \textbf{ModifiableVariable}, che indica la versione del protocollo. Per fare ciò, modifichiamo il \textbf{WorkflowTrace} nel messaggio di ServerHello che originariamente è impostato così: $\\$
+\begin{verbatim}
+    <protocolVersion>
+     <originalValue>03 03</originalValue>
+    </protocolVersion>
+\end{verbatim} $\\$
+Per ragioni storiche, 0x0303 indica la versione TLS 1.2. Troviamo quindi questi tipi di variabili: $\\$
+- ModifiableBigInteger: add, explicitValue, shiftLeft, shiftRight, subtract, xor $\\$
+- ModifiableBoolean: explicitValue, toggle $\\$
+- ModifiableByteArray: delete, duplicate, explicitValue, insert, shuffle, xor $\\$
+- ModifiableInteger: add, explicitValue, shiftLeft, shiftRight, subtract, xor $\\$
+- ModifiableLong: add, explicitValue, subtract, xor $\\$
+- ModifiableByte: add, explicitValue, subtract, xor $\\$
+- ModifiableString: explicitValue $\\$ 
+Ad esempio, se vogliamo modificare un valore di lunghezza 1 Byte utilizzeremo una \textbf{ModifiableByte}, mentre se vogliamo modificare un valore di lunghezza fino a 4 Byte useremo una \textbf{ModifiableInteger}. Proviamo quindi a forzare TLS-Attacker ad inviare la versione 0x3A3A del protocollo. Siccome <ProtocolVersion> è una variabile di tipo ByteArray andremo a scrivere nel WorkflowTrace del messaggio ServerHello: $\\$
+\begin{verbatim}
+    <Send>
+        <messages>
+            <ServerHello>
+                <protocolVersion>
+                    <byteArrayExplicitValueModification>
+                        <explicitValue>
+                            3A 3A
+                        </explicitValue>
+                    </byteArrayExplicitValueModification>
+                </protocolVersion>
+            </ServerHello>
+        </messages>
+    </Send>
+\end{verbatim} $\\$
+Ora, utilizzando il comando della \textbf{figura 1.3} e specificando il workflow di input appena modificato tramite il comando \textit{-workflow\_input} si può osservare, attraverso un tool per analizzare il traffico di pacchetti come ad esempio Wireshark, che la versione del protocollo è stata cambiata. 
+
  
